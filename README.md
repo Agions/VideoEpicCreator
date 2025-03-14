@@ -1,39 +1,57 @@
-# Agions燃剪工具
+# VideoEpicCreator
 
-## 项目概述
+一款基于Python和PyQt6开发的智能视频混剪工具，专为短剧创作者设计。利用多种AI大模型实现自动字幕识别、智能混剪、特效添加等功能，并与剪映等主流剪辑软件深度集成。
 
-Agions燃剪是一款智能化短剧高燃混剪工具，深度集成AI解说、多视频混剪、抖音热歌推荐及剪映生态无缝衔接，提供从创作到发布的完整解决方案。
+## 主要功能
 
-## 核心功能
-
-- **智能路径管理**：自动检测剪映草稿位置，支持自定义存储路径
-- **多视频混剪与AI分镜**：支持批量导入视频，AI识别高燃片段
-- **AI解说与文案生成**：多模型协同（通义千问、DeepSeek、Kimi等）
-- **BGM智能推荐**：接入抖音热歌库，智能匹配视频内容
-- **剪映草稿导出与二次编辑**：支持导出为剪映草稿格式，便于精细编辑
-
-## 技术栈
-
-- 前端：Vue.js/React + Electron
-- AI模型集成：DeepSeek、通义千问、Kimi等API调用
-- 视频处理：FFmpeg + OpenCV
-- 数据存储：本地JSON/SQLite
+- 视频管理：导入、编辑、删除、批量操作
+- AI字幕识别：自动识别视频中的语音内容
+- 智能混剪：基于AI大模型的内容理解实现智能混剪
+- 剪映集成：导出剪映草稿，无缝衔接专业剪辑
+- 多AI模型支持：集成通义千问、文心一言、ChatGPT等多种AI大模型
 
 ## 安装与使用
 
-待开发完成后更新
+### 环境要求
 
-## 开发计划
+- Python 3.9+
+- FFmpeg
+- 支持的操作系统：Windows 10/11, macOS 10.15+, Linux
 
-1. 基础界面搭建
-2. 智能路径管理模块
-3. 视频导入与处理
-4. AI模型集成
-5. 剪映草稿导出
-6. BGM推荐系统
+### 安装步骤
 
-## 安全与合规
+1. 克隆仓库
+   ```bash
+   git clone https://github.com/agions/VideoEpicCreator.git
+   cd VideoEpicCreator
+   ```
 
-- API Key使用AES-256加密存储
-- 用户作品数据仅存本地
-- BGM来源严格限制，确保版权合规
+2. 安装依赖
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. 运行应用
+   ```bash
+   python main.py
+   ```
+
+## 配置AI模型
+
+1. 在设置界面中选择需要使用的AI模型
+2. 填入对应的API Key
+3. 测试连接确保API正常工作
+
+
+## 贡献指南
+
+欢迎提交Pull Request或Issue来帮助改进本项目。
+
+## 许可证
+
+本项目采用 MIT 许可证，详情请参阅 LICENSE 文件。
+
+## 联系方式
+
+- 项目维护者: 1051736049@qq.com
+- 项目主页: https://github.com/agions/VideoEpicCreator 
