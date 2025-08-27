@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <circle cx="32" cy="32" r="30" fill="#444444" opacity="0.8"/>
+  
+  <!-- 电影胶片 -->
+  <rect x="18" y="22" width="28" height="20" rx="2" ry="2" fill="#333333" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- 胶片孔 -->
+  <circle cx="22" cy="26" r="2" fill="#ffffff"/>
+  <circle cx="22" cy="38" r="2" fill="#ffffff"/>
+  <circle cx="42" cy="26" r="2" fill="#ffffff"/>
+  <circle cx="42" cy="38" r="2" fill="#ffffff"/>
+  
+  <!-- 箭头 -->
+  <path d="M32,22 L32,10" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round"/>
+  <path d="M27,14 L32,9 L37,14" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- 剪映图标 -->
+  <rect x="26" y="46" width="16" height="10" rx="2" ry="2" fill="#ff6b6b" stroke="#ffffff" stroke-width="1"/>
+  <path d="M30,49 L38,53 L30,57 Z" fill="#ffffff"/>
+</svg> 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <circle cx="32" cy="32" r="30" fill="#444444" opacity="0.8"/>
+  
+  <!-- 软盘主体 -->
+  <rect x="16" y="16" width="32" height="32" rx="2" ry="2" fill="#5f87d2" stroke="#ffffff" stroke-width="1.5"/>
+  
+  <!-- 金属滑盖 -->
+  <rect x="22" y="16" width="20" height="8" fill="#cccccc" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- 写保护孔 -->
+  <rect x="18" y="30" width="6" height="6" fill="#333333" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- 标签区域 -->
+  <rect x="22" y="30" width="20" height="14" fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
+  
+  <!-- 指示灯 -->
+  <circle cx="43" cy="22" r="2" fill="#ff4444"/>
+</svg> 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16" height="64" viewBox="0 0 16 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 句柄点 -->
+  <circle cx="8" cy="16" r="2" fill="#ffffff" opacity="0.5"/>
+  <circle cx="8" cy="32" r="2" fill="#ffffff" opacity="0.5"/>
+  <circle cx="8" cy="48" r="2" fill="#ffffff" opacity="0.5"/>
+</svg> 
