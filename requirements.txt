@@ -1,0 +1,51 @@
+# 核心UI框架
+PyQt6>=6.4.0
+PyQt6-Qt6>=6.4.0
+
+# AI模型集成
+openai>=1.3.0
+ollama>=0.1.6
+dashscope>=1.13.6  # 阿里云千问API
+
+# 视频处理
+ffmpeg-python>=0.2.0
+opencv-python>=4.8.0
+moviepy>=1.0.3
+
+# 语音合成
+edge-tts>=6.1.0
+pyttsx3>=2.90
+
+# 数据处理和科学计算
+numpy>=1.21.0
+pandas>=2.0.0
+scipy>=1.9.0
+pillow>=8.3.0
+
+# 网络和API
+requests>=2.25.0
+aiohttp>=3.8.0
+httpx>=0.24.0
+
+# 配置和工具
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+click>=8.0.0
+tqdm>=4.64.0
+psutil>=5.9.0
+
+# 异步处理
+asyncio-throttle>=1.0.0
+tenacity>=8.2.0
+
+# 音频处理
+pydub>=0.25.0
+
+# 日志和监控
+loguru>=0.7.0
+rich>=13.0.0
+
+# 测试
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
