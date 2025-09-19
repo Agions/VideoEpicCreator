@@ -1,68 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+CineAIStudio 应用程序入口
+使用增强应用启动器的版本
+"""
+
 import sys
-import atexit
-import os
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtGui import QIcon
-from app.ui.professional_main_window import ProfessionalMainWindow
-from app.ui.global_style_fixer import apply_global_style_fixes
+import traceback
+
+# 导入新的应用启动器
+from app.application_launcher import ApplicationLauncher
 
 
-def cleanup():
-    """清理资源"""
-    # 这里可以添加应用退出时需要执行的清理操作
-    print("正在清理资源...")
-
-
-def setup_app_icon(app):
-    """设置应用程序图标"""
-    # 尝试不同尺寸的图标
-    icon_paths = [
-        "resources/icons/app_icon_64.png",
-        "resources/icons/app_icon_32.png",
-        "resources/icons/app_icon_128.png"
-    ]
-
-    for icon_path in icon_paths:
-        if os.path.exists(icon_path):
-            app.setWindowIcon(QIcon(icon_path))
-            break
-
-
-def main():
+def main() -> int:
     """主程序入口函数"""
-    # 注册退出处理函数
-    atexit.register(cleanup)
-    
-    # 创建应用实例
-    app = QApplication(sys.argv)
-    app.setApplicationName("VideoEpicCreator")
-    app.setApplicationVersion("0.1.0")
-    app.setOrganizationName("Agions")
-    
-    # 设置应用图标
-    setup_app_icon(app)
-    
-    # 专业UI系统不需要外部CSS文件
-    # 所有样式都通过Python代码内联定义，避免CSS兼容性问题
-    print("✅ 使用专业UI系统 - 无需外部CSS文件")
+    try:
+        # 创建并启动应用程序
+        launcher = ApplicationLauncher()
+        return launcher.launch(sys.argv)
 
-    # 应用全局样式修复
-    apply_global_style_fixes(app, is_dark=False)
-    print("✅ 应用全局样式修复")
+    except KeyboardInterrupt:
+        print("\n应用程序被用户中断")
+        return 0
 
-    # 创建并显示主窗口
-    window = ProfessionalMainWindow()
-    window.show()
-    
-    # 进入事件循环
-    exit_code = app.exec()
-    
-    # 返回退出码
-    return exit_code
+    except Exception as e:
+        print(f"应用程序启动失败: {str(e)}")
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    exit_code = main()
+    sys.exit(exit_code)

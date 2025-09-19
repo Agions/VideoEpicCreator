@@ -6,7 +6,8 @@ from typing import List, Dict, Optional, Any
 from dataclasses import dataclass
 from PyQt6.QtCore import QObject, pyqtSignal
 
-from .ai_manager import AIManager
+from .ai_service import AIService
+from .interfaces import AITaskType, create_text_generation_request
 from .scene_detector import SceneDetector, SceneInfo
 from app.core.video_manager import VideoClip
 
@@ -48,10 +49,10 @@ class ContentGenerator(QObject):
     segment_generated = pyqtSignal(ContentSegment)  # 片段生成完成
     generation_completed = pyqtSignal(GeneratedContent)  # 生成完成
     
-    def __init__(self, ai_manager: AIManager):
+    def __init__(self, ai_service: AIService):
         super().__init__()
-        
-        self.ai_manager = ai_manager
+
+        self.ai_service = ai_service
         self.scene_detector = SceneDetector()
         
         # 生成模板
@@ -263,7 +264,8 @@ class ContentGenerator(QObject):
 3. 生动有趣，符合短视频观众喜好
 """
         
-        response = await self.ai_manager.generate_text(prompt)
+        ai_request = create_text_generation_request(prompt=prompt)
+        response = await self.ai_service.process_request(ai_request)
         return response.content if response.success else f"这里是{scene.scene_type}场景"
     
     async def _generate_compilation_segments(self, scenes: List[SceneInfo], style: str) -> List[ContentSegment]:
@@ -337,7 +339,8 @@ class ContentGenerator(QObject):
 4. 贴合剧情发展
 """
         
-        response = await self.ai_manager.generate_text(prompt)
+        ai_request = create_text_generation_request(prompt=prompt)
+        response = await self.ai_service.process_request(ai_request)
         return response.content if response.success else "此时此刻，我的内心五味杂陈..."
     
     def _select_compilation_scenes(self, highlights: List[SceneInfo], ratio: float) -> List[SceneInfo]:
@@ -352,7 +355,8 @@ class ContentGenerator(QObject):
     async def _generate_transition_text(self, scene1: SceneInfo, scene2: SceneInfo, style: str) -> str:
         """生成转场文本"""
         prompt = f"为从{scene1.scene_type}场景到{scene2.scene_type}场景的转场生成{style}的过渡文本，要求简短有力。"
-        response = await self.ai_manager.generate_text(prompt)
+        ai_request = create_text_generation_request(prompt=prompt)
+        response = await self.ai_service.process_request(ai_request)
         return response.content if response.success else "接下来..."
     
     async def _optimize_segments(self, segments: List[ContentSegment]) -> List[ContentSegment]:
@@ -367,5 +371,6 @@ class ContentGenerator(QObject):
     
     async def _generate_ai_text(self, prompt: str) -> str:
         """生成AI文本"""
-        response = await self.ai_manager.generate_text(prompt)
+        ai_request = create_text_generation_request(prompt=prompt)
+        response = await self.ai_service.process_request(ai_request)
         return response.content if response.success else ""

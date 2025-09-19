@@ -13,16 +13,16 @@ from .defaults import DEFAULT_SETTINGS
 
 class SettingsManager(QObject):
     """设置管理器"""
-    
+
     # 信号
     settings_changed = pyqtSignal(str, object)  # 设置项名称, 新值
-    
+
     def __init__(self, config_dir: Optional[str] = None):
         super().__init__()
 
         # 配置目录
         if config_dir is None:
-            config_dir = os.path.join(os.path.expanduser("~"), ".videoepiccreator")
+            config_dir = os.path.join(os.path.expanduser("~"), ".CineAIStudio")
 
         self.config_dir = Path(config_dir)
         self.config_dir.mkdir(parents=True, exist_ok=True)
@@ -47,7 +47,7 @@ class SettingsManager(QObject):
 
         # 连接主题管理器
         self._connect_theme_manager()
-    
+
     def load_settings(self):
         """加载设置"""
         try:
@@ -60,7 +60,7 @@ class SettingsManager(QObject):
         except Exception as e:
             print(f"加载设置失败: {e}")
             self._settings = DEFAULT_SETTINGS.copy()
-    
+
     def save_settings(self):
         """保存设置"""
         try:
@@ -68,38 +68,38 @@ class SettingsManager(QObject):
                 json.dump(self._settings, f, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"保存设置失败: {e}")
-    
+
     def get_setting(self, key: str, default=None):
         """获取设置值"""
         keys = key.split('.')
         value = self._settings
-        
+
         for k in keys:
             if isinstance(value, dict) and k in value:
                 value = value[k]
             else:
                 return default
-        
+
         return value
-    
+
     def set_setting(self, key: str, value: Any):
         """设置值"""
         keys = key.split('.')
         current = self._settings
-        
+
         # 导航到父级字典
         for k in keys[:-1]:
             if k not in current:
                 current[k] = {}
             current = current[k]
-        
+
         # 设置值
         old_value = current.get(keys[-1])
         current[keys[-1]] = value
-        
+
         # 保存设置
         self.save_settings()
-        
+
         # 发射信号
         if old_value != value:
             self.settings_changed.emit(key, value)
@@ -107,16 +107,16 @@ class SettingsManager(QObject):
             # 特殊处理主题设置
             if key == "app.theme":
                 self._handle_theme_change(value)
-    
+
     def get_all_settings(self) -> Dict[str, Any]:
         """获取所有设置"""
         return self._settings.copy()
-    
+
     def reset_settings(self):
         """重置设置为默认值"""
         self._settings = DEFAULT_SETTINGS.copy()
         self.save_settings()
-    
+
     # 项目管理
     def load_projects(self):
         """加载项目列表"""
@@ -129,7 +129,7 @@ class SettingsManager(QObject):
         except Exception as e:
             print(f"加载项目列表失败: {e}")
             self._projects = []
-    
+
     def save_projects(self):
         """保存项目列表"""
         try:
@@ -137,21 +137,21 @@ class SettingsManager(QObject):
                 json.dump(self._projects, f, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"保存项目列表失败: {e}")
-    
+
     def get_projects(self) -> list:
         """获取项目列表"""
         return self._projects.copy()
-    
+
     def add_project(self, project_info: Dict[str, Any]):
         """添加项目"""
         self._projects.append(project_info)
         self.save_projects()
-    
+
     def remove_project(self, project_id: str):
         """移除项目"""
         self._projects = [p for p in self._projects if p.get('id') != project_id]
         self.save_projects()
-    
+
     def update_project(self, project_id: str, project_info: Dict[str, Any]):
         """更新项目信息"""
         for i, project in enumerate(self._projects):
@@ -159,24 +159,24 @@ class SettingsManager(QObject):
                 self._projects[i] = project_info
                 break
         self.save_projects()
-    
+
     # API密钥管理
     def set_api_key(self, provider: str, api_key: str):
         """设置API密钥"""
         self.api_key_manager.set_api_key(provider, api_key)
-    
+
     def get_api_key(self, provider: str) -> str:
         """获取API密钥"""
         return self.api_key_manager.get_api_key(provider)
-    
+
     def get_masked_api_key(self, provider: str) -> str:
         """获取掩码显示的API密钥"""
         return self.api_key_manager.get_masked_api_key(provider)
-    
+
     def has_api_key(self, provider: str) -> bool:
         """检查是否有API密钥"""
         return self.api_key_manager.has_api_key(provider)
-    
+
     def remove_api_key(self, provider: str):
         """移除API密钥"""
         self.api_key_manager.remove_api_key(provider)

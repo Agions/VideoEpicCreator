@@ -15,7 +15,7 @@ class ZhipuModel(BaseAIModel):
         super().__init__(config)
         self.api_key = config.api_key
         self.api_url = config.api_url or "https://open.bigmodel.cn/api/paas/v4"
-        self.model = config.model or "glm-4"
+        self.model = config.model or "glm-4-air"  # 使用最新版本
         
     async def initialize(self) -> bool:
         """初始化模型"""
@@ -134,6 +134,10 @@ class ZhipuModel(BaseAIModel):
                 else:
                     error_text = await response.text()
                     raise Exception(f"API请求失败 (状态码: {response.status}): {error_text}")
+    
+    def is_available(self) -> bool:
+        """检查模型是否可用"""
+        return bool(self.api_key and self.config.enabled)
     
     def get_model_info(self) -> Dict[str, Any]:
         """获取模型信息"""

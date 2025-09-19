@@ -38,7 +38,7 @@ class GlobalStyleFixer(QObject):
         # 基础样式修复
         base_style = f"""
             background-color: {colors['background']};
-            color: {colors['text_primary']};
+            color: {colors['text']};
             font-family: Arial, sans-serif;
             font-size: 14px;
         """
@@ -84,7 +84,7 @@ class GlobalStyleFixer(QObject):
 
         style = f"""
             QLabel {{
-                color: {colors['text_primary']};
+                color: {colors['text']};
                 background-color: transparent;
                 padding: 6px 8px;
                 border: none;
@@ -149,7 +149,7 @@ class GlobalStyleFixer(QObject):
             style = f"""
                 QPushButton {{
                     background-color: {colors['background']};
-                    color: {colors['text_primary']};
+                    color: {colors['text']};
                     border: 1px solid {colors['border']};
                     border-radius: 6px;
                     padding: 10px 20px;
@@ -219,7 +219,7 @@ class GlobalStyleFixer(QObject):
         style = f"""
             QTextEdit {{
                 background-color: {colors['background']};
-                color: {colors['text_primary']};
+                color: {colors['text']};
                 border: 1px solid {colors['border']};
                 border-radius: 6px;
                 padding: 8px;
@@ -237,7 +237,7 @@ class GlobalStyleFixer(QObject):
         style = f"""
             QComboBox {{
                 background-color: {colors['background']};
-                color: {colors['text_primary']};
+                color: {colors['text']};
                 border: 1px solid {colors['border']};
                 border-radius: 6px;
                 padding: 6px 12px;
@@ -271,7 +271,7 @@ class GlobalStyleFixer(QObject):
                 border: 1px solid {colors['border']};
                 border-radius: 6px;
                 text-align: center;
-                color: {colors['text_primary']};
+                color: {colors['text']};
                 font-weight: 500;
             }}
             QProgressBar::chunk {{
@@ -311,7 +311,7 @@ class GlobalStyleFixer(QObject):
             
             QWidget {{
                 background-color: {colors['background']};
-                color: {colors['text_primary']};
+                color: {colors['text']};
             }}
             
             QMainWindow {{

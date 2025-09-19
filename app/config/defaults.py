@@ -15,16 +15,16 @@ DEFAULT_SETTINGS = {
         "auto_save_interval": 300,  # 秒
         "check_updates": True
     },
-    
+
     # 项目设置
     "project": {
-        "default_location": str(Path.home() / "VideoEpicCreator" / "Projects"),
+        "default_location": str(Path.home() / "CineAIStudio" / "Projects"),
         "auto_backup": True,
         "backup_interval": 600,  # 秒
         "max_backups": 10,
         "recent_projects_count": 10
     },
-    
+
     # 视频设置
     "video": {
         "default_resolution": "1920x1080",
@@ -35,7 +35,7 @@ DEFAULT_SETTINGS = {
         "cache_thumbnails": True,
         "max_cache_size": 1024  # MB
     },
-    
+
     # AI模型设置
     "ai_models": {
         "default_model": "智谱AI",
@@ -109,7 +109,7 @@ DEFAULT_SETTINGS = {
             "temperature": 0.7,
             "top_p": 0.9
         },
-        
+
         "ollama": {
             "enabled": False,
             "api_url": "http://localhost:11434",
@@ -119,7 +119,7 @@ DEFAULT_SETTINGS = {
             "top_p": 0.9
         }
     },
-    
+
     # 场景检测设置
     "scene_detection": {
         "enabled": True,
@@ -130,7 +130,7 @@ DEFAULT_SETTINGS = {
         "detect_audio_changes": True,
         "detect_face_changes": True
     },
-    
+
     # 语音合成设置
     "voice_synthesis": {
         "enabled": True,
@@ -141,7 +141,7 @@ DEFAULT_SETTINGS = {
         "output_format": "wav",
         "sample_rate": 22050
     },
-    
+
     # 剪映集成设置
     "jianying": {
         "enabled": True,
@@ -151,7 +151,7 @@ DEFAULT_SETTINGS = {
         "include_assets": True,
         "asset_copy_mode": "link"  # link, copy, move
     },
-    
+
     # 导出设置
     "export": {
         "default_format": "mp4",
@@ -159,9 +159,9 @@ DEFAULT_SETTINGS = {
         "default_resolution": "1920x1080",
         "default_fps": 30,
         "hardware_acceleration": True,
-        "output_folder": str(Path.home() / "VideoEpicCreator" / "Exports")
+        "output_folder": str(Path.home() / "CineAIStudio" / "Exports")
     },
-    
+
     # 界面设置
     "ui": {
         "window_size": [1280, 720],
@@ -172,7 +172,7 @@ DEFAULT_SETTINGS = {
         "show_tooltips": True,
         "animation_enabled": True
     },
-    
+
     # 性能设置
     "performance": {
         "max_threads": 4,
@@ -181,14 +181,14 @@ DEFAULT_SETTINGS = {
         "preview_threads": 2,
         "analysis_threads": 2
     },
-    
+
     # 日志设置
     "logging": {
         "enabled": True,
         "level": "INFO",
         "max_file_size": 10,  # MB
         "max_files": 5,
-        "log_folder": str(Path.home() / "VideoEpicCreator" / "Logs")
+        "log_folder": str(Path.home() / "CineAIStudio" / "Logs")
     }
 }
 
@@ -201,7 +201,7 @@ AI_PROVIDERS = {
         "api_docs": "https://platform.openai.com/docs/",
         "models": ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"]
     },
-    
+
     "qianwen": {
         "name": "通义千问",
         "display_name": "通义千问 (阿里云)",
@@ -209,7 +209,7 @@ AI_PROVIDERS = {
         "api_docs": "https://help.aliyun.com/zh/dashscope/",
         "models": ["qwen-turbo", "qwen-plus", "qwen-max"]
     },
-    
+
     "wenxin": {
         "name": "文心一言",
         "display_name": "文心一言 (百度)",
@@ -249,7 +249,7 @@ AI_PROVIDERS = {
         "api_docs": "https://platform.deepseek.com/api-docs/",
         "models": ["deepseek-chat", "deepseek-coder"]
     },
-    
+
     "ollama": {
         "name": "Ollama",
         "display_name": "Ollama (本地模型)",
@@ -263,10 +263,10 @@ AI_PROVIDERS = {
 def get_jianying_paths():
     """获取剪映可能的安装路径"""
     import platform
-    
+
     system = platform.system()
     paths = []
-    
+
     if system == "Windows":
         # Windows路径
         paths.extend([
@@ -283,6 +283,6 @@ def get_jianying_paths():
             f"{home}/Movies/JianyingPro",
             "/Applications/JianyingPro.app"
         ])
-    
+
     # 返回存在的路径
     return [path for path in paths if os.path.exists(path)]

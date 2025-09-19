@@ -16,7 +16,7 @@
     "use_proxy": false,
     "proxy_url": "",
     "use_cache": true,
-    "cache_dir": "/Users/zfkc/Desktop/VideoEpicCreator/app/ui/ai_cache"
+    "cache_dir": "/Users/zfkc/Desktop/CineAIStudio/app/ui/ai_cache"
   },
   "OpenAI GPT-3.5": {
     "api_key": "",
@@ -35,7 +35,7 @@
     "use_proxy": false,
     "proxy_url": "",
     "use_cache": true,
-    "cache_dir": "/Users/zfkc/Desktop/VideoEpicCreator/app/ui/ai_cache"
+    "cache_dir": "/Users/zfkc/Desktop/CineAIStudio/app/ui/ai_cache"
   },
   "本地大模型": {
     "model_path": "",
@@ -54,7 +54,7 @@
     "frequency_penalty": 0.0,
     "presence_penalty": 0.0,
     "use_cache": true,
-    "cache_dir": "/Users/zfkc/Desktop/VideoEpicCreator/app/ui/ai_cache"
+    "cache_dir": "/Users/zfkc/Desktop/CineAIStudio/app/ui/ai_cache"
   },
   "自定义API": {
     "api_key": "",
@@ -73,7 +73,7 @@
     "use_proxy": false,
     "proxy_url": "",
     "use_cache": true,
-    "cache_dir": "/Users/zfkc/Desktop/VideoEpicCreator/app/ui/ai_cache",
+    "cache_dir": "/Users/zfkc/Desktop/CineAIStudio/app/ui/ai_cache",
     "api_provider": "OpenAI兼容",
     "api_version": "",
     "custom_headers": false,

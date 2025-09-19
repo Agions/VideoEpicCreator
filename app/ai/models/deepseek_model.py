@@ -27,8 +27,8 @@ class DeepSeekModel(BaseAIModel):
                 "max_tokens": 10
             })
             
-            self.is_initialized = test_response.get("choices") is not None
-            return self.is_initialized
+            self._initialized = test_response.get("choices") is not None
+            return self._initialized
             
         except Exception as e:
             print(f"DeepSeek模型初始化失败: {e}")
@@ -135,6 +135,10 @@ class DeepSeekModel(BaseAIModel):
                     error_text = await response.text()
                     raise Exception(f"API请求失败 (状态码: {response.status}): {error_text}")
     
+    def is_available(self) -> bool:
+        """检查模型是否可用"""
+        return bool(self.api_key and self.config.enabled)
+    
     def get_model_info(self) -> Dict[str, Any]:
         """获取模型信息"""
         return {
@@ -144,7 +148,7 @@ class DeepSeekModel(BaseAIModel):
             "max_tokens": self.config.max_tokens,
             "temperature": self.config.temperature,
             "top_p": self.config.top_p,
-            "initialized": self.is_initialized
+            "initialized": self._initialized
         }
     
     def get_available_models(self) -> List[str]:

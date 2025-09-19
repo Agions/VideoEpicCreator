@@ -12,14 +12,13 @@ pillow==10.0.0
 # HTTP Requests
 requests==2.31.0
 
-# AI Model Integrations
-openai==0.28.0
-dashscope==1.14.1  # 通义千问 (updated)
-ollama==0.1.7      # Ollama local models
-
-# Chinese AI Models
-qianfan==0.3.5     # 文心一言
-zhipuai==1.0.7     # 智谱AI
+# Chinese AI Models - Latest Versions
+dashscope==1.17.7  # 通义千问 (latest)
+qianfan==0.4.6     # 文心一言 (latest)
+zhipuai==2.0.6     # 智谱AI (latest)
+sparkdesk-python==1.2.4  # 讯飞星火 (latest)
+tencentcloud-sdk-python==3.0.970  # 腾讯混元 (latest)
+deepseek-sdk==1.0.0  # DeepSeek (latest)
 
 # Voice Synthesis
 pyttsx3==2.90      # Local TTS
@@ -33,6 +32,7 @@ cairosvg==2.7.0    # SVG转PNG
 python-dotenv==1.0.0  # Environment variables
 psutil==5.9.6      # System utilities
 pathlib2==2.3.7    # Enhanced path handling
+jieba==0.42.1      # Chinese text processing
 
 # Audio Processing
 librosa==0.10.1    # Audio analysis
@@ -40,3 +40,19 @@ soundfile==0.12.1  # Audio file I/O
 
 # Scene Detection
 scenedetect==0.6.2 # Video scene detection
+
+# Video Processing Enhancement
+imageio==2.31.6         # Video I/O operations
+imageio-ffmpeg==0.4.8    # FFmpeg wrapper for imageio
+moviepy==1.0.3          # Video editing and processing
+av==10.0.0              # Pythonic bindings for FFmpeg
+
+# Performance Monitoring
+prometheus-client==0.19.0  # Metrics collection
+py-cpuinfo==9.0.0        # CPU information
+nvidia-ml-py==12.535.133   # NVIDIA GPU monitoring
+
+# System Utilities
+wmi==1.4.9               # Windows system information (optional)
+pynvml==11.5.0           # NVIDIA GPU management
+ GPUtil==1.4.0            # GPU utilization monitoring

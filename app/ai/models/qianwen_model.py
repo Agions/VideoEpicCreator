@@ -14,7 +14,7 @@ class QianwenModel(BaseAIModel):
     def __init__(self, config: AIModelConfig):
         super().__init__(config)
         self.session = None
-        self.model_name = "qwen-turbo"  # 默认模型
+        self.model_name = "qwen-max"  # 默认使用最新版本
     
     async def initialize(self) -> bool:
         """初始化通义千问连接"""

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Integrations module for VideoEpicCreator
+Integrations module for CineAIStudio
 
 This module contains integrations with external video editing tools:
 - JianYing (剪映) integration for professional video editing

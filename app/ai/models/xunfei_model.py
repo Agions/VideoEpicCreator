@@ -161,6 +161,10 @@ class XunfeiModel(BaseAIModel):
                     error_text = await response.text()
                     raise Exception(f"API请求失败 (状态码: {response.status}): {error_text}")
     
+    def is_available(self) -> bool:
+        """检查模型是否可用"""
+        return bool(self.api_key and self.api_secret and self.app_id and self.config.enabled)
+    
     def get_model_info(self) -> Dict[str, Any]:
         """获取模型信息"""
         return {

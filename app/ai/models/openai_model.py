@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+OpenAI模型集成
+"""
 
 import json
 import asyncio
@@ -14,7 +17,7 @@ class OpenAIModel(BaseAIModel):
     def __init__(self, config: AIModelConfig):
         super().__init__(config)
         self.session = None
-        self.model_name = "gpt-3.5-turbo"  # 默认模型
+        self.model_name = config.model or "gpt-3.5-turbo"
     
     async def initialize(self) -> bool:
         """初始化OpenAI连接"""
@@ -25,7 +28,8 @@ class OpenAIModel(BaseAIModel):
             # 创建HTTP会话
             headers = {
                 "Authorization": f"Bearer {self.config.api_key}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
             
             # 添加自定义头部
@@ -34,7 +38,7 @@ class OpenAIModel(BaseAIModel):
             
             self.session = aiohttp.ClientSession(
                 headers=headers,
-                timeout=aiohttp.ClientTimeout(total=60)
+                timeout=aiohttp.ClientTimeout(total=self.config.timeout)
             )
             
             # 测试连接
@@ -51,17 +55,13 @@ class OpenAIModel(BaseAIModel):
     async def _test_connection(self) -> bool:
         """测试API连接"""
         try:
-            # 发送一个简单的测试请求
             test_data = {
                 "model": self.model_name,
-                "messages": [
-                    {"role": "user", "content": "Hello"}
-                ],
+                "messages": [{"role": "user", "content": "Hello"}],
                 "max_tokens": 5
             }
             
-            url = f"{self.config.api_url}/chat/completions"
-            async with self.session.post(url, json=test_data) as response:
+            async with self.session.post("https://api.openai.com/v1/chat/completions", json=test_data) as response:
                 return response.status == 200
                 
         except Exception:
@@ -76,62 +76,43 @@ class OpenAIModel(BaseAIModel):
             )
         
         try:
-            # 准备消息格式
             messages = kwargs.get("messages", [
                 {"role": "user", "content": prompt}
             ])
             
-            # 准备请求数据
             data = {
                 "model": kwargs.get("model", self.model_name),
                 "messages": messages,
                 "max_tokens": kwargs.get("max_tokens", self.config.max_tokens),
                 "temperature": kwargs.get("temperature", self.config.temperature),
                 "top_p": kwargs.get("top_p", self.config.top_p),
-                "frequency_penalty": kwargs.get("frequency_penalty", self.config.frequency_penalty),
-                "presence_penalty": kwargs.get("presence_penalty", self.config.presence_penalty),
                 "stream": False
             }
             
-            # 发送请求
-            url = f"{self.config.api_url}/chat/completions"
-            async with self.session.post(url, json=data) as response:
+            async with self.session.post("https://api.openai.com/v1/chat/completions", json=data) as response:
                 if response.status == 200:
                     result = await response.json()
                     
-                    # 解析响应
-                    choices = result.get('choices', [])
+                    choice = result.get("choices", [{}])[0]
+                    content = choice.get("message", {}).get("content", "")
+                    usage = result.get("usage", {})
                     
-                    if choices:
-                        content = choices[0].get('message', {}).get('content', '')
-                        
-                        # 获取使用统计
-                        usage = result.get('usage', {})
-                        
-                        return AIResponse(
-                            success=True,
-                            content=content,
-                            usage={
-                                "prompt_tokens": usage.get('prompt_tokens', 0),
-                                "completion_tokens": usage.get('completion_tokens', 0),
-                                "total_tokens": usage.get('total_tokens', 0)
-                            },
-                            metadata={
-                                "id": result.get('id', ''),
-                                "object": result.get('object', ''),
-                                "created": result.get('created', 0),
-                                "model": result.get('model', ''),
-                                "finish_reason": choices[0].get('finish_reason', '')
-                            }
-                        )
-                    else:
-                        return AIResponse(
-                            success=False,
-                            error_message="响应中没有生成内容"
-                        )
+                    return AIResponse(
+                        success=True,
+                        content=content,
+                        usage={
+                            "prompt_tokens": usage.get("prompt_tokens", 0),
+                            "completion_tokens": usage.get("completion_tokens", 0),
+                            "total_tokens": usage.get("total_tokens", 0)
+                        },
+                        metadata={
+                            "model": result.get("model", ""),
+                            "finish_reason": choice.get("finish_reason", "")
+                        }
+                    )
                 else:
                     error_data = await response.json()
-                    error_message = error_data.get('error', {}).get('message', f"请求失败: {response.status}")
+                    error_message = error_data.get("error", {}).get("message", f"请求失败: {response.status}")
                     
                     return AIResponse(
                         success=False,
@@ -146,61 +127,16 @@ class OpenAIModel(BaseAIModel):
     
     async def analyze_content(self, content: str, analysis_type: str = "general") -> AIResponse:
         """分析内容"""
-        # 根据分析类型构建提示词
         prompts = {
-            "general": f"Please analyze the main features and key points of the following content:\n\n{content}",
-            "emotion": f"Please analyze the emotional tone and sentiment of the following content:\n\n{content}",
-            "scene": f"Please analyze the video scene content including characters, environment, and actions:\n\n{content}",
-            "dialogue": f"Please analyze the dialogue content and character relationships:\n\n{content}",
-            "summary": f"Please summarize the core points of the following content:\n\n{content}",
-            "keywords": f"Please extract keywords from the following content:\n\n{content}"
+            "general": f"请分析以下内容的主要特点和要点：\n\n{content}",
+            "emotion": f"请分析以下内容的情感色彩和情绪表达：\n\n{content}",
+            "scene": f"请分析以下视频场景的内容和特点：\n\n{content}",
+            "dialogue": f"请分析以下对话的内容和人物关系：\n\n{content}",
+            "summary": f"请总结以下内容的核心要点：\n\n{content}",
+            "keywords": f"请提取以下内容的关键词：\n\n{content}"
         }
         
         prompt = prompts.get(analysis_type, prompts["general"])
-        return await self.generate_text(prompt)
-    
-    async def generate_commentary(self, video_info: Dict[str, Any], style: str = "humorous") -> AIResponse:
-        """生成视频解说"""
-        prompt = f"""
-Please generate {style} commentary for the following short drama video:
-
-Video Information:
-- Duration: {video_info.get('duration', 'Unknown')}
-- Scenes: {video_info.get('scenes', 'Unknown')}
-- Characters: {video_info.get('characters', 'Unknown')}
-- Plot: {video_info.get('plot', 'Unknown')}
-
-Requirements:
-1. Commentary style: {style}
-2. Engaging and interesting language
-3. Highlight plot highlights
-4. Suitable for short video audiences
-5. Appropriate length
-
-Please generate commentary text:
-"""
-        return await self.generate_text(prompt)
-    
-    async def generate_monologue(self, video_info: Dict[str, Any], character: str = "protagonist", emotion: str = "calm") -> AIResponse:
-        """生成第一人称独白"""
-        prompt = f"""
-Please generate a first-person monologue from the {character}'s perspective for the following short drama video:
-
-Video Information:
-- Duration: {video_info.get('duration', 'Unknown')}
-- Scenes: {video_info.get('scenes', 'Unknown')}
-- Characters: {video_info.get('characters', 'Unknown')}
-- Plot: {video_info.get('plot', 'Unknown')}
-
-Requirements:
-1. Character perspective: {character}
-2. Emotional tone: {emotion}
-3. First-person narrative
-4. Match character personality
-5. Align with plot development
-
-Please generate monologue text:
-"""
         return await self.generate_text(prompt)
     
     def is_available(self) -> bool:
@@ -213,15 +149,12 @@ Please generate monologue text:
             "name": self.name,
             "type": "cloud",
             "provider": "OpenAI",
-            "api_url": self.config.api_url,
             "model": self.model_name,
             "initialized": self._initialized,
             "config": {
                 "max_tokens": self.config.max_tokens,
                 "temperature": self.config.temperature,
-                "top_p": self.config.top_p,
-                "frequency_penalty": self.config.frequency_penalty,
-                "presence_penalty": self.config.presence_penalty
+                "top_p": self.config.top_p
             }
         }
     
@@ -230,23 +163,10 @@ Please generate monologue text:
         if not super().validate_config():
             return False
         
-        # OpenAI特定验证
         if not self.config.api_key:
             return False
         
-        if not self.config.api_key.startswith('sk-'):
-            return False
-        
-        if not self.config.api_url:
-            return False
-        
         return True
-    
-    def set_model(self, model_name: str):
-        """设置模型名称"""
-        available_models = ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"]
-        if model_name in available_models:
-            self.model_name = model_name
     
     async def close(self):
         """关闭连接"""

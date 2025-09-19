@@ -14,10 +14,10 @@ Contains integrations for various AI model providers:
 """
 
 from .base_model import BaseAIModel, AIModelConfig, AIResponse
-from .openai_model import OpenAIModel
+# from .openai_model import OpenAIModel  # 暂时注释掉，文件不存在
 from .qianwen_model import QianwenModel
 from .wenxin_model import WenxinModel
-from .ollama_model import OllamaModel
+# from .ollama_model import OllamaModel  # 暂时注释掉，文件不存在
 from .zhipu_model import ZhipuModel
 from .xunfei_model import XunfeiModel
 from .hunyuan_model import HunyuanModel
@@ -25,6 +25,8 @@ from .deepseek_model import DeepSeekModel
 
 __all__ = [
     'BaseAIModel', 'AIModelConfig', 'AIResponse',
-    'OpenAIModel', 'QianwenModel', 'WenxinModel', 'OllamaModel',
+    # 'OpenAIModel',  # 暂时注释掉，文件不存在
+    'QianwenModel', 'WenxinModel', 
+    # 'OllamaModel',  # 暂时注释掉，文件不存在
     'ZhipuModel', 'XunfeiModel', 'HunyuanModel', 'DeepSeekModel'
 ]

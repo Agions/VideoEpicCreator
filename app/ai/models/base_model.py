@@ -12,6 +12,7 @@ class AIModelConfig:
     name: str
     api_key: str = ""
     api_url: str = ""
+    model: str = ""
     max_tokens: int = 4096
     temperature: float = 0.7
     top_p: float = 0.9
@@ -21,6 +22,10 @@ class AIModelConfig:
     use_proxy: bool = False
     proxy_url: str = ""
     custom_headers: Dict[str, str] = None
+    # 讯飞星火专用
+    api_secret: str = ""
+    app_id: str = ""
+    timeout: int = 30
     
     def __post_init__(self):
         if self.custom_headers is None:

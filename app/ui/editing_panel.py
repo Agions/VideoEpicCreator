@@ -13,7 +13,7 @@ from PyQt6.QtGui import QFont, QIcon, QPixmap, QDragEnterEvent, QDropEvent
 
 from app.core.project_manager import ProjectManager, ProjectInfo
 from app.config.settings_manager import SettingsManager
-from .project_panel import ProjectInfoDialog
+from project_manager_component import ProjectInfoDialog
 import os
 from datetime import datetime
 

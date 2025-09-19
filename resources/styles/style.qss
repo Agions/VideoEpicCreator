@@ -1,4 +1,4 @@
-/* VideoEpicCreator 主样式表 */
+/* CineAIStudio 主样式表 */
 
 /* 全局样式 */
 QWidget {
@@ -261,4 +261,4 @@ QProgressBar::chunk {
 QStatusBar {
     background-color: #3D3D3D;
     border-top: 1px solid #555555;
-} 
+}

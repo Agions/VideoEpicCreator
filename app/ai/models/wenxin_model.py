@@ -15,7 +15,7 @@ class WenxinModel(BaseAIModel):
         super().__init__(config)
         self.session = None
         self.access_token = None
-        self.model_name = "ernie-bot-turbo"  # 默认模型
+        self.model_name = "ernie-bot-4"  # 默认使用最新版本
     
     async def initialize(self) -> bool:
         """初始化文心一言连接"""
