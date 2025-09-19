@@ -25,9 +25,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QThread, QSize, QPoint
 from PyQt6.QtGui import QIcon, QPixmap, QFont, QPainter, QColor, QPen
 
-from app.ai.enhanced_ai_manager import EnhancedAIManager
-from app.ai.cost_manager import ChineseLLMCostManager, CostTier
-from app.ai.load_balancer import ChineseLLMLoadBalancer, LoadBalancingStrategy
+from app.ai.ai_service import AIService
+from app.ai.interfaces import AITaskType, AIRequest, AIResponse, create_text_generation_request, create_commentary_request
 from app.config.settings_manager import SettingsManager
 from ..professional_ui_system import ProfessionalStyleEngine, ColorScheme, FontScheme
 
@@ -112,12 +111,12 @@ class AIToolsPanel(QWidget):
     cost_updated = pyqtSignal(float)                     # 成本更新
     content_generated = pyqtSignal(str, str)             # 内容生成完成
     
-    def __init__(self, ai_manager: EnhancedAIManager, settings_manager: SettingsManager, parent=None):
+    def __init__(self, ai_service: AIService, settings_manager: SettingsManager, parent=None):
         super().__init__(parent)
-        self.ai_manager = ai_manager
+        self.ai_service = ai_service
         self.settings_manager = settings_manager
-        self.cost_manager = ai_manager.cost_manager
-        self.load_balancer = ai_manager.load_balancer
+        self.cost_manager = ai_service.cost_manager
+        self.load_balancer = ai_service.load_balancer
         
         # 样式引擎
         self.style_engine = ProfessionalStyleEngine()
@@ -1102,19 +1101,22 @@ class AIToolsPanel(QWidget):
             # 构建提示词
             prompt = self._build_commentary_prompt(task.input_data)
             
-            # 调用AI模型
-            response = await self.ai_manager.generate_text(
+            # 调用AI服务
+            ai_request = create_text_generation_request(
                 prompt=prompt,
-                model_provider=task.selected_model.value,
+                provider=task.selected_model.value,
                 max_tokens=self.commentary_length.value()
             )
+
+            # 提交请求并等待结果
+            response = await self.ai_service.process_request(ai_request)
             
             if response.success:
                 task.result = response.content
                 task.status = "completed"
                 task.completed_at = time.time()
                 task.progress = 100.0
-                
+
                 # 更新UI
                 self.commentary_result.setText(response.content)
                 self.task_completed.emit(task.task_id, response.content)
@@ -1143,12 +1145,14 @@ class AIToolsPanel(QWidget):
             task.started_at = time.time()
             
             prompt = self._build_script_prompt(task.input_data)
-            
-            response = await self.ai_manager.generate_text(
+
+            ai_request = create_text_generation_request(
                 prompt=prompt,
-                model_provider=task.selected_model.value,
+                provider=task.selected_model.value,
                 max_tokens=2000
             )
+
+            response = await self.ai_service.process_request(ai_request)
             
             if response.success:
                 task.result = response.content
@@ -1182,11 +1186,13 @@ class AIToolsPanel(QWidget):
             
             prompt = self._build_subtitle_prompt(task.input_data)
             
-            response = await self.ai_manager.generate_text(
+            ai_request = create_text_generation_request(
                 prompt=prompt,
-                model_provider=task.selected_model.value,
+                provider=task.selected_model.value,
                 max_tokens=1500
             )
+
+            response = await self.ai_service.process_request(ai_request)
             
             if response.success:
                 task.result = response.content
@@ -1220,11 +1226,13 @@ class AIToolsPanel(QWidget):
             
             prompt = self._build_translation_prompt(task.input_data)
             
-            response = await self.ai_manager.generate_text(
+            ai_request = create_text_generation_request(
                 prompt=prompt,
-                model_provider=task.selected_model.value,
+                provider=task.selected_model.value,
                 max_tokens=2000
             )
+
+            response = await self.ai_service.process_request(ai_request)
             
             if response.success:
                 task.result = response.content
@@ -1360,11 +1368,13 @@ class AIToolsPanel(QWidget):
             
             prompt = self._build_quality_prompt(task.input_data)
             
-            response = await self.ai_manager.generate_text(
+            ai_request = create_text_generation_request(
                 prompt=prompt,
-                model_provider=task.selected_model.value,
+                provider=task.selected_model.value,
                 max_tokens=1000
             )
+
+            response = await self.ai_service.process_request(ai_request)
             
             if response.success:
                 task.result = response.content

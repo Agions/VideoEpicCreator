@@ -240,23 +240,33 @@ class EnhancedAIManager(QObject):
         try:
             # 根据任务类型执行
             if task.task_type == AITaskType.TEXT_GENERATION:
-                result = asyncio.run(self._execute_text_generation(task))
+                # TODO: 移除asyncio.run - 这个文件即将被ai_service.py替代
+                # result = asyncio.run(self._execute_text_generation(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.CONTENT_ANALYSIS:
-                result = asyncio.run(self._execute_content_analysis(task))
+                # result = asyncio.run(self._execute_content_analysis(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.COMMENTARY_GENERATION:
-                result = asyncio.run(self._execute_commentary_generation(task))
+                # result = asyncio.run(self._execute_commentary_generation(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.MONOLOGUE_GENERATION:
-                result = asyncio.run(self._execute_monologue_generation(task))
+                # result = asyncio.run(self._execute_monologue_generation(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.SCENE_ANALYSIS:
-                result = asyncio.run(self._execute_scene_analysis(task))
+                # result = asyncio.run(self._execute_scene_analysis(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.SUBTITLE_GENERATION:
-                result = asyncio.run(self._execute_subtitle_generation(task))
+                # result = asyncio.run(self._execute_subtitle_generation(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.VIDEO_EDITING_SUGGESTION:
-                result = asyncio.run(self._execute_editing_suggestion(task))
+                # result = asyncio.run(self._execute_editing_suggestion(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.CONTENT_CLASSIFICATION:
-                result = asyncio.run(self._execute_content_classification(task))
+                # result = asyncio.run(self._execute_content_classification(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             else:
-                result = asyncio.run(self._execute_text_generation(task))
+                # result = asyncio.run(self._execute_text_generation(task))
+                result = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             
             # 更新性能统计
             response_time = time.time() - start_time
@@ -928,7 +938,14 @@ class EnhancedAIManager(QObject):
         self.thread_pool.shutdown(wait=True)
         
         # 清理各个管理器
-        asyncio.run(self.model_manager.cleanup())
+        # TODO: 移除asyncio.run - 这个文件即将被ai_service.py替代
+        # asyncio.run(self.model_manager.cleanup())
+        try:
+            # 尝试同步清理
+            if hasattr(self.model_manager, 'cleanup_sync'):
+                self.model_manager.cleanup_sync()
+        except Exception as e:
+            logger.warning(f"模型管理器清理失败: {e}")
         
         logger.info("增强AI管理器资源清理完成")
 

@@ -22,7 +22,7 @@ from PyQt6.QtCore import QObject, pyqtSignal, QTimer
 
 # 导入新的错误处理系统
 from .error_handler_system import (
-    GlobalErrorHandler, ErrorLevel, ErrorCategory, 
+    GlobalErrorHandler, ErrorLevel, ErrorCategory,
     ErrorInfo, ErrorHandlerMixin, global_error_handler
 )
 
@@ -264,10 +264,10 @@ class ErrorHandler(QObject):
                 user_action=error_info.context.user_action if hasattr(error_info.context, 'user_action') else None,
                 additional_data=error_info.details
             )
-            
+
             # 让新的全局错误处理器处理错误
             global_error_handler.handle_error(new_error_info, show_dialog=False)
-            
+
             # 应用错误过滤器
             if self._should_ignore_error(error_info):
                 return
@@ -558,6 +558,26 @@ class ErrorHandler(QObject):
         self._error_history.clear()
         self._error_count = 0
         self.error_count_updated.emit(0)
+
+    def show_toast(self, title: str, message: str, message_type: str = "info") -> None:
+        """显示Toast通知"""
+        try:
+            from app.ui.components.error_handler import ToastManager, MessageType
+            toast_manager = ToastManager()
+
+            # 转换消息类型
+            msg_type = MessageType.INFO
+            if message_type.lower() == "success":
+                msg_type = MessageType.SUCCESS
+            elif message_type.lower() == "warning":
+                msg_type = MessageType.WARNING
+            elif message_type.lower() == "error":
+                msg_type = MessageType.ERROR
+
+            toast_manager.show_toast(title, message, msg_type)
+        except Exception as e:
+            # 如果ToastManager不可用，只记录日志
+            self.logger.warning(f"无法显示Toast通知: {e}")
 
     def cleanup(self) -> None:
         """清理资源"""

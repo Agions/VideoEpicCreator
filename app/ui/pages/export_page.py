@@ -171,15 +171,14 @@ class ExportPage(QWidget):
         
         project_layout.addLayout(project_select_layout)
         
+        project_card.add_content(project_content)
         layout.addWidget(project_card)
         
         # 导出设置
-        settings_card = ProfessionalCard()
-        settings_layout = QVBoxLayout(settings_card)
-        
-        settings_title = QLabel("导出设置")
-        settings_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        settings_layout.addWidget(settings_title)
+        settings_card = ProfessionalCard("导出设置")
+        settings_content = QWidget()
+        settings_layout = QVBoxLayout(settings_content)
+        settings_layout.setContentsMargins(0, 0, 0, 0)
         
         # 格式选择
         format_layout = QHBoxLayout()
@@ -249,15 +248,14 @@ class ExportPage(QWidget):
         
         settings_layout.addLayout(output_layout)
         
+        settings_card.add_content(settings_content)
         layout.addWidget(settings_card)
         
         # 处理进度
-        progress_card = ProfessionalCard()
-        progress_layout = QVBoxLayout(progress_card)
-        
-        progress_title = QLabel("导出进度")
-        progress_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        progress_layout.addWidget(progress_title)
+        progress_card = ProfessionalCard("导出进度")
+        progress_content = QWidget()
+        progress_layout = QVBoxLayout(progress_content)
+        progress_layout.setContentsMargins(0, 0, 0, 0)
         
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
@@ -267,6 +265,7 @@ class ExportPage(QWidget):
         self.progress_label = QLabel("就绪")
         progress_layout.addWidget(self.progress_label)
         
+        progress_card.add_content(progress_content)
         layout.addWidget(progress_card)
         
         return panel
@@ -279,12 +278,10 @@ class ExportPage(QWidget):
         layout.setSpacing(15)
         
         # 快速分享
-        share_card = ProfessionalCard()
-        share_layout = QVBoxLayout(share_card)
-        
-        share_title = QLabel("快速分享")
-        share_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        share_layout.addWidget(share_title)
+        share_card = ProfessionalCard("快速分享")
+        share_content = QWidget()
+        share_layout = QVBoxLayout(share_content)
+        share_layout.setContentsMargins(0, 0, 0, 0)
         
         # 平台选择
         platforms = [
@@ -306,15 +303,14 @@ class ExportPage(QWidget):
         
         share_layout.addLayout(platform_grid)
         
+        share_card.add_content(share_content)
         layout.addWidget(share_card)
         
         # 分享设置
-        share_settings_card = ProfessionalCard()
-        share_settings_layout = QVBoxLayout(share_settings_card)
-        
-        share_settings_title = QLabel("分享设置")
-        share_settings_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        share_settings_layout.addWidget(share_settings_title)
+        share_settings_card = ProfessionalCard("分享设置")
+        share_settings_content = QWidget()
+        share_settings_layout = QVBoxLayout(share_settings_content)
+        share_settings_layout.setContentsMargins(0, 0, 0, 0)
         
         # 分享选项
         self.title_edit = QLineEdit()
@@ -351,15 +347,14 @@ class ExportPage(QWidget):
         
         share_settings_layout.addLayout(privacy_layout)
         
+        share_settings_card.add_content(share_settings_content)
         layout.addWidget(share_settings_card)
         
         # 导出历史
-        history_card = ProfessionalCard()
-        history_layout = QVBoxLayout(history_card)
-        
-        history_title = QLabel("导出历史")
-        history_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        history_layout.addWidget(history_title)
+        history_card = ProfessionalCard("导出历史")
+        history_content = QWidget()
+        history_layout = QVBoxLayout(history_content)
+        history_layout.setContentsMargins(0, 0, 0, 0)
         
         self.history_list = QListWidget()
         self.history_list.setMaximumHeight(200)
@@ -389,6 +384,7 @@ class ExportPage(QWidget):
         
         history_layout.addLayout(history_buttons_layout)
         
+        history_card.add_content(history_content)
         layout.addWidget(history_card)
         
         layout.addStretch()

@@ -504,7 +504,7 @@ class ProfessionalMainWindow(QMainWindow):
 
         # 特效面板
         effects_panel = self._create_dock_panel("特效", PanelPosition.RIGHT)
-        self._add_panel_to_dock(effects_panel, "effects_panel")
+        self._add_panel_to_dock(effects_panel, "effects_component")
 
         # AI工具面板
         ai_panel = self._create_dock_panel("AI工具", PanelPosition.RIGHT)
@@ -574,19 +574,19 @@ class ProfessionalMainWindow(QMainWindow):
             layout=WindowLayout.DEFAULT,
             panel_positions={
                 "media_panel": PanelPosition.LEFT,
-                "effects_panel": PanelPosition.RIGHT,
+                "effects_component": PanelPosition.RIGHT,
                 "ai_panel": PanelPosition.RIGHT,
                 "properties_panel": PanelPosition.RIGHT,
                 "history_panel": PanelPosition.LEFT
             },
             panel_sizes={
                 "media_panel": (250, 400),
-                "effects_panel": (250, 300),
+                "effects_component": (250, 300),
                 "ai_panel": (250, 300),
                 "properties_panel": (250, 300),
                 "history_panel": (250, 200)
             },
-            visible_panels=["media_panel", "effects_panel", "ai_panel", "properties_panel", "history_panel"],
+            visible_panels=["media_panel", "effects_component", "ai_panel", "properties_panel", "history_panel"],
             is_default=True
         )
 
@@ -596,19 +596,19 @@ class ProfessionalMainWindow(QMainWindow):
             layout=WindowLayout.COMPACT,
             panel_positions={
                 "media_panel": PanelPosition.LEFT,
-                "effects_panel": PanelPosition.LEFT,
+                "effects_component": PanelPosition.LEFT,
                 "ai_panel": PanelPosition.LEFT,
                 "properties_panel": PanelPosition.RIGHT,
                 "history_panel": PanelPosition.RIGHT
             },
             panel_sizes={
                 "media_panel": (200, 300),
-                "effects_panel": (200, 250),
+                "effects_component": (200, 250),
                 "ai_panel": (200, 250),
                 "properties_panel": (200, 300),
                 "history_panel": (200, 200)
             },
-            visible_panels=["media_panel", "effects_panel", "ai_panel", "properties_panel"]
+            visible_panels=["media_panel", "effects_component", "ai_panel", "properties_panel"]
         )
 
         # 沉浸式布局

@@ -21,10 +21,10 @@ from PyQt6.QtCore import pyqtSignal, Qt, QTimer, QPropertyAnimation, QRect, QEas
 from PyQt6.QtGui import QFont, QPixmap, QIcon, QPainter, QColor, QPen, QBrush, QAction
 
 from app.ui.professional_ui_system import ProfessionalCard, ProfessionalButton
-from app.ui.components.loading_indicator import LoadingOverlay
+from app.ui.components.loading_component import LoadingOverlay
 from app.core.error_handler import ErrorHandler
 from app.ui.components.error_handler import MessageType
-from app.ui.components.shortcut_manager import ShortcutManager
+from app.ui.components.shortcut_manager_component import ShortcutManager
 
 
 class ProfessionalProjectsPage(QWidget):

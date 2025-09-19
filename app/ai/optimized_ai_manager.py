@@ -18,6 +18,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from queue import PriorityQueue, Queue
+
+from PyQt6.QtCore import QEventLoop, QTimer
 import aiohttp
 import numpy as np
 from collections import defaultdict, deque
@@ -603,7 +605,18 @@ class OptimizedAIManager(QObject):
             
             # 关闭HTTP会话
             if self.session:
-                asyncio.run(self.session.close())
+                try:
+                    # 尝试同步关闭
+                    if hasattr(self.session, 'close_sync'):
+                        self.session.close_sync()
+                    else:
+                        # 使用Qt的工作线程来处理异步关闭
+                        loop = QEventLoop()
+                        task = loop.create_task(self.session.close())
+                        QTimer.singleShot(0, lambda: task)
+                        loop.exec()
+                except Exception as e:
+                    logger.warning(f"HTTP会话关闭失败: {e}")
             
             # 清理缓存
             self.response_cache.clear()

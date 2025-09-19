@@ -271,22 +271,22 @@ class LayoutHelper:
 
 class MessageHelper:
     """消息辅助类"""
-    
+
     @staticmethod
     def show_info(parent: QWidget, title: str, message: str) -> None:
         """显示信息消息"""
         QMessageBox.information(parent, title, message)
-    
+
     @staticmethod
     def show_warning(parent: QWidget, title: str, message: str) -> None:
         """显示警告消息"""
         QMessageBox.warning(parent, title, message)
-    
+
     @staticmethod
     def show_error(parent: QWidget, title: str, message: str) -> None:
         """显示错误消息"""
         QMessageBox.critical(parent, title, message)
-    
+
     @staticmethod
     def show_question(parent: QWidget, title: str, message: str) -> bool:
         """显示确认对话框"""
@@ -296,6 +296,27 @@ class MessageHelper:
             QMessageBox.StandardButton.No
         )
         return reply == QMessageBox.StandardButton.Yes
+
+
+# 便捷函数
+def show_info_message(parent: QWidget, message: str, title: str = "信息") -> None:
+    """显示信息消息的便捷函数"""
+    MessageHelper.show_info(parent, title, message)
+
+
+def show_warning_message(parent: QWidget, message: str, title: str = "警告") -> None:
+    """显示警告消息的便捷函数"""
+    MessageHelper.show_warning(parent, title, message)
+
+
+def show_error_message(parent: QWidget, message: str, title: str = "错误") -> None:
+    """显示错误消息的便捷函数"""
+    MessageHelper.show_error(parent, title, message)
+
+
+def show_question_message(parent: QWidget, message: str, title: str = "确认") -> bool:
+    """显示确认对话框的便捷函数"""
+    return MessageHelper.show_question(parent, title, message)
 
 
 class ProgressHelper:

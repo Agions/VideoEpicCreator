@@ -35,7 +35,7 @@ from PyQt6.QtGui import (
 )
 
 from app.core.video_preview_engine import VideoFrame, ZoomMode
-from app.ui.components.video_preview_panel import VideoPreviewWidget
+from video_preview_component import VideoPreviewWidget
 
 
 class ViewLayout(Enum):

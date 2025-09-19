@@ -71,12 +71,10 @@ class SubtitlePage(QWidget):
         layout.setSpacing(15)
         
         # 视频上传区域
-        upload_card = ProfessionalCard()
-        upload_layout = QVBoxLayout(upload_card)
-        
-        upload_title = QLabel("视频上传")
-        upload_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        upload_layout.addWidget(upload_title)
+        upload_card = ProfessionalCard("视频上传")
+        upload_content = QWidget()
+        upload_layout = QVBoxLayout(upload_content)
+        upload_layout.setContentsMargins(0, 0, 0, 0)
         
         # 上传按钮和预览
         upload_btn_layout = QHBoxLayout()
@@ -105,15 +103,14 @@ class SubtitlePage(QWidget):
         """)
         upload_layout.addWidget(self.video_preview)
         
+        upload_card.add_content(upload_content)
         layout.addWidget(upload_card)
         
         # 字幕编辑区域
-        subtitle_card = ProfessionalCard()
-        subtitle_layout = QVBoxLayout(subtitle_card)
-        
-        subtitle_title = QLabel("字幕编辑")
-        subtitle_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        subtitle_layout.addWidget(subtitle_title)
+        subtitle_card = ProfessionalCard("字幕编辑")
+        subtitle_content = QWidget()
+        subtitle_layout = QVBoxLayout(subtitle_content)
+        subtitle_layout.setContentsMargins(0, 0, 0, 0)
         
         # 字幕表格
         self.subtitle_table = QTableWidget()
@@ -146,6 +143,7 @@ class SubtitlePage(QWidget):
         
         subtitle_layout.addLayout(edit_tools_layout)
         
+        subtitle_card.add_content(subtitle_content)
         layout.addWidget(subtitle_card)
         
         return panel
@@ -158,12 +156,10 @@ class SubtitlePage(QWidget):
         layout.setSpacing(15)
         
         # AI字幕生成设置
-        ai_settings_card = ProfessionalCard()
-        ai_settings_layout = QVBoxLayout(ai_settings_card)
-        
-        ai_title = QLabel("AI字幕生成设置")
-        ai_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        ai_settings_layout.addWidget(ai_title)
+        ai_settings_card = ProfessionalCard("AI字幕生成设置")
+        ai_settings_content = QWidget()
+        ai_settings_layout = QVBoxLayout(ai_settings_content)
+        ai_settings_layout.setContentsMargins(0, 0, 0, 0)
         
         # 语言选择
         language_layout = QHBoxLayout()
@@ -211,15 +207,14 @@ class SubtitlePage(QWidget):
         self.generate_btn = ProfessionalButton("🤖 生成AI字幕", "primary")
         ai_settings_layout.addWidget(self.generate_btn)
         
+        ai_settings_card.add_content(ai_settings_content)
         layout.addWidget(ai_settings_card)
         
         # 处理进度
-        progress_card = ProfessionalCard()
-        progress_layout = QVBoxLayout(progress_card)
-        
-        progress_title = QLabel("处理进度")
-        progress_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        progress_layout.addWidget(progress_title)
+        progress_card = ProfessionalCard("处理进度")
+        progress_content = QWidget()
+        progress_layout = QVBoxLayout(progress_content)
+        progress_layout.setContentsMargins(0, 0, 0, 0)
         
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100)
@@ -229,30 +224,28 @@ class SubtitlePage(QWidget):
         self.progress_label = QLabel("就绪")
         progress_layout.addWidget(self.progress_label)
         
+        progress_card.add_content(progress_content)
         layout.addWidget(progress_card)
         
         # 字幕预览
-        preview_card = ProfessionalCard()
-        preview_layout = QVBoxLayout(preview_card)
-        
-        preview_title = QLabel("字幕预览")
-        preview_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        preview_layout.addWidget(preview_title)
+        preview_card = ProfessionalCard("字幕预览")
+        preview_content = QWidget()
+        preview_layout = QVBoxLayout(preview_content)
+        preview_layout.setContentsMargins(0, 0, 0, 0)
         
         self.subtitle_preview = QTextEdit()
         self.subtitle_preview.setPlaceholderText("生成的字幕内容将在这里显示...")
         self.subtitle_preview.setMaximumHeight(200)
         preview_layout.addWidget(self.subtitle_preview)
         
+        preview_card.add_content(preview_content)
         layout.addWidget(preview_card)
         
         # 导出选项
-        export_card = ProfessionalCard()
-        export_layout = QVBoxLayout(export_card)
-        
-        export_title = QLabel("导出选项")
-        export_title.setFont(QFont("Arial", 16, QFont.Weight.Bold))
-        export_layout.addWidget(export_title)
+        export_card = ProfessionalCard("导出选项")
+        export_content = QWidget()
+        export_layout = QVBoxLayout(export_content)
+        export_layout.setContentsMargins(0, 0, 0, 0)
         
         export_buttons_layout = QHBoxLayout()
         
@@ -268,6 +261,7 @@ class SubtitlePage(QWidget):
         
         export_layout.addLayout(export_buttons_layout)
         
+        export_card.add_content(export_content)
         layout.addWidget(export_card)
         
         layout.addStretch()

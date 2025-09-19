@@ -56,6 +56,7 @@ class HardwareInfo:
     supported_codecs: List[str]
     is_available: bool = True
     performance_score: float = 0.0
+    cores: int = 1  # 添加cores属性，默认为1
 
 
 @dataclass
@@ -153,7 +154,8 @@ class HardwareAccelerationManager:
                 max_resolution="8K",
                 max_fps=120,
                 supported_codecs=["libx264", "libx265", "libvpx", "libvpx-vp9"],
-                performance_score=1.0
+                performance_score=1.0,
+                cores=psutil.cpu_count()  # 添加CPU核心数
             )
             
             self.hardware_info[HardwareType.CPU] = hardware

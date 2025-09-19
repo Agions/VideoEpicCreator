@@ -350,9 +350,12 @@ class AIManager(QObject):
             else:
                 # 使用负载均衡器选择最佳模型
                 if self.load_balancer:
-                    model_name, model = asyncio.run(
-                        self.load_balancer.get_best_model(task.prompt, task.task_type.value)
-                    )
+                    # TODO: 移除asyncio.run - 这个文件即将被ai_service.py替代
+                    # model_name, model = asyncio.run(
+                    #     self.load_balancer.get_best_model(task.prompt, task.task_type.value)
+                    # )
+                    # 临时同步实现
+                    model_name, model = list(self.models.items())[0]
                     task.provider = model_name
                 else:
                     # 回退到第一个可用模型
@@ -363,16 +366,22 @@ class AIManager(QObject):
             
             # 执行任务
             if task.task_type == AITaskType.TEXT_GENERATION:
-                response = asyncio.run(model.generate_text(task.prompt, **task.parameters))
+                # TODO: 移除asyncio.run - 这个文件即将被ai_service.py替代
+                # response = asyncio.run(model.generate_text(task.prompt, **task.parameters))
+                response = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.CONTENT_ANALYSIS:
-                response = asyncio.run(model.analyze_content(task.prompt, **task.parameters))
+                # response = asyncio.run(model.analyze_content(task.prompt, **task.parameters))
+                response = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.COMMENTARY_GENERATION:
-                response = asyncio.run(model.generate_commentary(task.parameters.get("video_info", {}), task.parameters.get("style", "幽默风趣")))
+                # response = asyncio.run(model.generate_commentary(task.parameters.get("video_info", {}), task.parameters.get("style", "幽默风趣")))
+                response = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             elif task.task_type == AITaskType.MONOLOGUE_GENERATION:
-                response = asyncio.run(model.generate_monologue(task.parameters.get("video_info", {}), task.parameters.get("character", "主角"), task.parameters.get("emotion", "平静")))
+                # response = asyncio.run(model.generate_monologue(task.parameters.get("video_info", {}), task.parameters.get("character", "主角"), task.parameters.get("emotion", "平静")))
+                response = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             else:
                 # 默认使用文本生成
-                response = asyncio.run(model.generate_text(task.prompt, **task.parameters))
+                # response = asyncio.run(model.generate_text(task.prompt, **task.parameters))
+                response = AIResponse(success=False, error_message="功能已迁移到新的AIService")
             
             # 更新统计信息
             response_time = time.time() - start_time
@@ -515,7 +524,9 @@ class AIManager(QObject):
         for provider, model in self.models.items():
             try:
                 start_time = time.time()
-                response = asyncio.run(model.generate_text("你好", max_tokens=10))
+                # TODO: 移除asyncio.run - 这个文件即将被ai_service.py替代
+                # response = asyncio.run(model.generate_text("你好", max_tokens=10))
+                response = AIResponse(success=False, error_message="功能已迁移到新的AIService")
                 response_time = time.time() - start_time
                 
                 if response.success:
@@ -827,7 +838,14 @@ class AIManager(QObject):
         # 关闭模型连接
         for model in self.models.values():
             if hasattr(model, 'close'):
-                asyncio.run(model.close())
+                # TODO: 移除asyncio.run - 这个文件即将被ai_service.py替代
+                # asyncio.run(model.close())
+                try:
+                    # 尝试同步关闭
+                    if hasattr(model, 'close_sync'):
+                        model.close_sync()
+                except Exception as e:
+                    logger.warning(f"模型关闭失败: {e}")
         
         logger.info("统一AI管理器资源清理完成")
 

@@ -27,7 +27,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QThread, QSize, QPoint, QTime
 from PyQt6.QtGui import QIcon, QPixmap, QFont, QPainter, QColor, QPen, QTextCharFormat
 
-from app.ai.enhanced_ai_manager import EnhancedAIManager
+from app.ai.ai_service import AIService
+from app.ai.interfaces import AITaskType, AIRequest, AIResponse, create_text_generation_request
 from app.config.settings_manager import SettingsManager
 from ..professional_ui_system import ProfessionalStyleEngine, ColorScheme, FontScheme
 
@@ -150,11 +151,11 @@ class AISubtitleGenerator(QWidget):
     style_applied = pyqtSignal(str, object)               # 样式应用完成
     export_completed = pyqtSignal(str, str)                       # 导出完成
     
-    def __init__(self, ai_manager: EnhancedAIManager, settings_manager: SettingsManager, parent=None):
+    def __init__(self, ai_service: AIService, settings_manager: SettingsManager, parent=None):
         super().__init__(parent)
-        self.ai_manager = ai_manager
+        self.ai_service = ai_service
         self.settings_manager = settings_manager
-        self.cost_manager = ai_manager.cost_manager
+        self.cost_manager = ai_service.cost_manager
         
         # 样式引擎
         self.style_engine = ProfessionalStyleEngine()
@@ -703,8 +704,8 @@ class AISubtitleGenerator(QWidget):
     
     def _connect_signals(self):
         """连接信号"""
-        # AI管理器信号
-        self.ai_manager.model_response_ready.connect(self.on_ai_response)
+        # AI服务信号
+        self.ai_service.worker_finished.connect(self.on_ai_response)
         
         # 样式相关信号
         self.font_size_spin.valueChanged.connect(self.update_style_preview)
@@ -1237,12 +1238,15 @@ class AISubtitleGenerator(QWidget):
                 # 构建翻译提示词
                 prompt = self.build_translation_prompt(subtitle.text, target_language)
                 
-                # 调用AI模型进行翻译
-                response = await self.ai_manager.generate_text(
+                # 调用AI服务进行翻译
+                ai_request = create_text_generation_request(
                     prompt=prompt,
-                    model_provider=self.translation_model_combo.currentData(),
+                    provider=self.translation_model_combo.currentData(),
                     max_tokens=500
                 )
+
+                # 提交请求并等待结果
+                response = await self.ai_service.process_request(ai_request)
                 
                 if response.success:
                     subtitle.translation = response.content.strip()

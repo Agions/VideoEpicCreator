@@ -26,8 +26,8 @@ from app.ui.utils import (
     ComponentBase, FileDialogManager, MessageHelper, 
     ProgressHelper, ButtonFactory, LayoutHelper
 )
-from app.ui.components.timeline_editor import ProfessionalTimelineEditor
-from app.ui.components.video_preview_panel import ProfessionalVideoPreviewPanel
+from app.ui.components.timeline_editor_component import ProfessionalTimelineEditor
+from app.ui.components.video_preview_component import ProfessionalVideoPreviewPanel
 from app.core.video_processing_engine import (
     VideoProcessingEngine, TimelineProject, ProcessingConfig, VideoInfo
 )
@@ -271,7 +271,7 @@ class VideoEditingPage(ComponentBase):
     def _connect_signals(self):
         """连接信号"""
         # 时间轴编辑器信号
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor.project_loaded.connect(self._on_timeline_project_loaded)
             self.timeline_editor.project_saved.connect(self._on_timeline_project_saved)
             self.timeline_editor.clip_selected.connect(self._on_clip_selected)
@@ -351,14 +351,14 @@ class VideoEditingPage(ComponentBase):
     
     def _toggle_playback(self):
         """切换播放状态"""
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor._toggle_playback()
         elif hasattr(self, 'video_preview'):
             self.video_preview.toggle_playback()
     
     def _stop_playback(self):
         """停止播放"""
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor._stop_playback()
         elif hasattr(self, 'video_preview'):
             self.video_preview.stop()
@@ -430,7 +430,7 @@ class VideoEditingPage(ComponentBase):
         # 更新子组件主题
         if hasattr(self, 'video_preview'):
             self.video_preview.set_theme(self.is_dark_theme)
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor.set_theme(self.is_dark_theme)
     
     def _on_tool_clicked(self):
@@ -513,18 +513,18 @@ class VideoEditingPage(ComponentBase):
     
     def _new_project(self):
         """新建项目"""
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             project = self.timeline_editor.create_new_project("新项目")
             self.status_label.setText("已创建新项目")
     
     def _open_project(self):
         """打开项目"""
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor._open_project()
     
     def _save_project(self):
         """保存项目"""
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor._save_project()
     
     def _import_video(self):
@@ -534,7 +534,7 @@ class VideoEditingPage(ComponentBase):
         if file_path:
             try:
                 # 如果有时间轴编辑器，添加到时间轴
-                if hasattr(self, 'timeline_editor') and self.timeline_editor.current_project:
+                if hasattr(self, "timeline_editor_component") and self.timeline_editor.current_project:
                     # 添加到第一个视频轨道
                     if self.timeline_editor.current_project.video_tracks:
                         track_id = self.timeline_editor.current_project.video_tracks[0].track_id
@@ -552,7 +552,7 @@ class VideoEditingPage(ComponentBase):
     
     def _export_video(self):
         """导出视频"""
-        if not hasattr(self, 'timeline_editor') or not self.timeline_editor.current_project:
+        if not hasattr(self, "timeline_editor_component") or not self.timeline_editor.current_project:
             MessageHelper.show_warning(self, "提示", "没有可导出的项目")
             return
         
@@ -591,7 +591,7 @@ class VideoEditingPage(ComponentBase):
         """清理资源"""
         if hasattr(self, 'video_preview'):
             self.video_preview.cleanup()
-        if hasattr(self, 'timeline_editor'):
+        if hasattr(self, "timeline_editor_component"):
             self.timeline_editor.cleanup()
         if hasattr(self, 'video_engine'):
             self.video_engine.cleanup()

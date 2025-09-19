@@ -29,12 +29,12 @@ from PyQt6.QtGui import QIcon, QPixmap, QFont, QPainter, QColor, QPen, QTextChar
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PyQt6.QtMultimediaWidgets import QVideoWidget
 
-from app.ai.ai_manager import AIManager
+from app.ai.ai_service import AIService
 from app.ai.generators.text_to_speech import TextToSpeechEngine, get_tts_engine
 from app.ai.intelligent_content_generator import IntelligentContentGenerator, create_content_generator
 from app.ai.compilation_generator import AICompilationGenerator, create_compilation_generator
-from app.ui.components.ai_content_generator import AIContentGenerator
-from app.ui.components.ai_subtitle_generator import AISubtitleGenerator
+from app.ui.components.content_generator_component import AIContentGenerator
+from app.ui.components.subtitle_generator_component import AISubtitleGenerator
 from app.config.settings_manager import SettingsManager
 from ..professional_ui_system import ProfessionalStyleEngine, ColorScheme, FontScheme
 
@@ -76,9 +76,9 @@ class AIToolsPanel(QWidget):
     task_completed = pyqtSignal(str, object)     # 任务完成
     task_error = pyqtSignal(str, str)           # 任务错误
     
-    def __init__(self, ai_manager: AIManager, settings_manager: SettingsManager, parent=None):
+    def __init__(self, ai_service: AIService, settings_manager: SettingsManager, parent=None):
         super().__init__(parent)
-        self.ai_manager = ai_manager
+        self.ai_service = ai_service
         self.settings_manager = settings_manager
         self.tts_engine = get_tts_engine()
         
@@ -86,8 +86,8 @@ class AIToolsPanel(QWidget):
         self.style_engine = ProfessionalStyleEngine()
         
         # AI生成器
-        self.content_generator = create_content_generator(ai_manager)
-        self.compilation_generator = create_compilation_generator(ai_manager)
+        self.content_generator = create_content_generator(ai_service)
+        self.compilation_generator = create_compilation_generator(ai_service)
         
         # 工具配置
         self.tools_config = self._load_tools_config()
@@ -514,7 +514,7 @@ class AIToolsPanel(QWidget):
         
         # 创建字幕生成器
         self.subtitle_generator = AISubtitleGenerator(
-            self.ai_manager, self.settings_manager
+            self.ai_service, self.settings_manager
         )
         layout.addWidget(self.subtitle_generator)
         
@@ -696,12 +696,12 @@ class AIToolsPanel(QWidget):
         
     def _connect_signals(self):
         """连接信号"""
-        # AI管理器信号
+        # AI服务信号
         try:
-            self.ai_manager.task_completed.connect(self._on_ai_task_completed)
-            self.ai_manager.task_failed.connect(self._on_ai_task_failed)
+            self.ai_service.worker_finished.connect(self._on_ai_task_completed)
+            self.ai_service.worker_error.connect(self._on_ai_task_failed)
         except AttributeError as e:
-            print(f"AIManager信号连接失败: {e}")
+            print(f"AIService信号连接失败: {e}")
         
         # TTS引擎信号
         try:
@@ -1251,10 +1251,10 @@ class AIToolsPanel(QWidget):
 class AIToolsPage(QWidget):
     """AI工具页面"""
     
-    def __init__(self, ai_manager: AIManager, settings_manager: SettingsManager, parent=None):
+    def __init__(self, ai_service: AIService, settings_manager: SettingsManager, parent=None):
         super().__init__(parent)
-        
-        self.ai_manager = ai_manager
+
+        self.ai_service = ai_service
         self.settings_manager = settings_manager
         
         self._init_ui()
@@ -1266,7 +1266,7 @@ class AIToolsPage(QWidget):
         layout.setSpacing(0)
         
         # 创建AI工具面板
-        self.tools_panel = AIToolsPanel(self.ai_manager, self.settings_manager)
+        self.tools_panel = AIToolsPanel(self.ai_service, self.settings_manager)
         layout.addWidget(self.tools_panel)
         
     def get_tools_panel(self) -> AIToolsPanel:

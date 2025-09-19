@@ -64,7 +64,7 @@ except ImportError:
         pass
 
 from app.ui.professional_ui_system import ProfessionalCard, ProfessionalButton
-from app.ui.components.loading_indicator import LoadingOverlay
+from app.ui.components.loading_component import LoadingOverlay
 from app.ui.components.error_handler import ToastManager, MessageType
 import random
 

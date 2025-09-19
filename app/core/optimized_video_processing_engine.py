@@ -188,8 +188,8 @@ class OptimizedVideoProcessingEngine:
         self.hardware_manager = HardwareAccelerationManager(ffmpeg_path)
         self.effects_engine = EffectsEngine()
         self.batch_processor = BatchProcessor()
-        self.codec_manager = VideoCodecManager(ffmpeg_path)
-        self.video_optimizer = VideoOptimizer(ffmpeg_path)
+        self.codec_manager = VideoCodecManager(ffmpeg_path, ffprobe_path)
+        self.video_optimizer = VideoOptimizer(ffmpeg_path, ffprobe_path)
         
         # 任务管理
         self.task_queue = PriorityQueue()

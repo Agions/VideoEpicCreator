@@ -27,7 +27,7 @@ from PyQt6.QtWidgets import (
     QButtonGroup, QDialog, QFileDialog, QMessageBox, QApplication,
     QSplitter, QMenu, QInputDialog, QProgressBar, QLineEdit,
     QGraphicsView, QGraphicsScene, QGraphicsItem, QGraphicsRectItem,
-    QGraphicsTextItem, QGraphicsProxyWidget
+    QGraphicsTextItem, QGraphicsProxyWidget, QStyleOptionGraphicsItem
 )
 from PyQt6.QtCore import Qt, QSize, QTimer, pyqtSignal, QThread, QMutex, QMutexLocker, QPointF, QRectF, QMimeData, \
     QRect, QPoint, QObject, pyqtSlot, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup
@@ -37,12 +37,12 @@ from PyQt6.QtGui import (
     QCursor, QFontMetrics, QDragEnterEvent, QDropEvent, QWheelEvent,
     QMouseEvent, QPaintEvent, QResizeEvent, QIcon, QPalette,
     QDrag, QAction, QKeySequence, QContextMenuEvent, QDoubleValidator,
-    QIntValidator, QFontDatabase
+    QIntValidator, QFontDatabase, QGraphicsSceneHoverEvent
 )
 
-from ...core.optimized_video_processing_engine import OptimizedVideoProcessingEngine
-from ...core.video_processing_engine import TimelineProject, TimelineTrack, TimelineClip, ProcessingConfig, VideoInfo
-from ...professional_ui_system import ProfessionalStyleEngine, UITheme, ColorScheme, FontScheme, SpacingScheme
+from app.core.optimized_video_processing_engine import OptimizedVideoProcessingEngine
+from app.core.video_processing_engine import TimelineProject, TimelineTrack, TimelineClip, ProcessingConfig, VideoInfo
+from app.ui.professional_ui_system import ProfessionalStyleEngine, UITheme, ColorScheme, FontScheme, SpacingScheme
 from .timeline_widget import TimelineRuler
 
 logger = logging.getLogger(__name__)
@@ -178,7 +178,7 @@ class OptimizedTimelineClip(QGraphicsRectItem):
         # 在后台线程加载
         threading.Thread(target=load_thumbnail, daemon=True).start()
     
-    def paint(self, painter: QPainter, option: QWidget.QStyleOptionGraphicsItem, widget: Optional[QWidget] = None):
+    def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: Optional[QWidget] = None):
         """优化的绘制方法"""
         start_time = time.time()
         
@@ -482,7 +482,7 @@ class OptimizedTimelineTrack(QGraphicsItem):
         """获取边界矩形"""
         return QRectF(0, 0, self.track_width, self.track_height)
     
-    def paint(self, painter: QPainter, option: QWidget.QStyleOptionGraphicsItem, widget: Optional[QWidget] = None):
+    def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: Optional[QWidget] = None):
         """绘制轨道"""
         if not self.needs_update:
             return
@@ -673,7 +673,7 @@ class OptimizedTimelineRuler(QGraphicsItem):
         """获取边界矩形"""
         return QRectF(0, 0, self.timeline_ruler.pixels_per_second * 60, 40)
     
-    def paint(self, painter: QPainter, option: QWidget.QStyleOptionGraphicsItem, widget: Optional[QWidget] = None):
+    def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: Optional[QWidget] = None):
         """绘制标尺"""
         if not self.needs_update and self.cached_pixmap:
             painter.drawPixmap(0, 0, self.cached_pixmap)

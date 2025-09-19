@@ -2,9 +2,22 @@
 # -*- coding: utf-8 -*-
 
 """
+⚠️ DEPRECATED: 此文件已被统一主题系统替代
+请使用 app.ui.unified_theme_system.UnifiedThemeManager
+
+保留此文件仅用于向后兼容，新代码不应使用此模块
+计划于下一版本中移除
+
 专业主题管理器 - 提供完整的主题切换和管理功能
 支持Material Design深色/浅色主题，以及自定义主题
 """
+
+import warnings
+warnings.warn(
+    "ProfessionalThemeManager is deprecated. Use UnifiedThemeManager from app.ui.unified_theme_system instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
 
 from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass

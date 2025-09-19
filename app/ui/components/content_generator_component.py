@@ -28,7 +28,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QThread, QSize, QPoint, QTime, QUrl
 from PyQt6.QtGui import QIcon, QPixmap, QFont, QPainter, QColor, QPen, QTextCharFormat, QDesktopServices, QAction
 
-from app.ai.ai_manager import AIManager
+from app.ai.ai_service import AIService
+from app.ai.interfaces import AITaskType, AIRequest, AIResponse, create_text_generation_request
 from app.config.settings_manager import SettingsManager
 from ..professional_ui_system import ProfessionalStyleEngine, ColorScheme, FontScheme
 
@@ -160,10 +161,10 @@ class AIContentGenerator(QWidget):
     content_saved = pyqtSignal(str, str)             # 内容保存
     template_applied = pyqtSignal(ContentTemplate)   # 模板应用
     
-    def __init__(self, ai_manager: AIManager, settings_manager: SettingsManager, parent=None):
+    def __init__(self, ai_service: AIService, settings_manager: SettingsManager, parent=None):
         super().__init__(parent)
-        
-        self.ai_manager = ai_manager
+
+        self.ai_service = ai_service
         self.settings_manager = settings_manager
         
         # 样式引擎
@@ -896,9 +897,12 @@ class AIContentGenerator(QWidget):
         
         # 发送信号
         self.generation_started.emit(request.request_id)
-        
+
         # 开始生成
         asyncio.create_task(self.execute_generation(request))
+
+        # 连接AI服务信号
+        self._connect_ai_service_signals()
         
     def create_generation_request(self, prompt: str) -> ContentGenerationRequest:
         """创建生成请求"""
@@ -928,22 +932,28 @@ class AIContentGenerator(QWidget):
         
         try:
             self.generation_progress.emit(request.request_id, 0.0)
-            
+
             # 构建提示词
             prompt = self.build_generation_prompt(request)
-            
-            # 调用AI模型
-            response = await self.ai_manager.generate_text(
+
+            # 调用AI服务
+            ai_request = create_text_generation_request(
                 prompt=prompt,
-                model_provider=request.model,
+                provider=request.model,
                 max_tokens=request.max_tokens,
                 temperature=request.temperature
             )
-            
+
+            # 提交请求并获取结果
+            self.ai_service.submit_request(ai_request)
+
+            # 等待结果（这里需要实现异步等待机制）
+            response = await self._wait_for_ai_response(ai_request.request_id)
+
             if response.success:
                 # 后处理生成的内容
                 content = self.post_process_content(response.content, request)
-                
+
                 # 创建响应对象
                 generation_response = ContentGenerationResponse(
                     request_id=request.request_id,
@@ -958,7 +968,7 @@ class AIContentGenerator(QWidget):
                         "model": request.model,
                         "created_at": time.time()
                     },
-                    tokens_used=response.tokens_used,
+                    tokens_used=response.usage.get("total_tokens", 0),
                     generation_time=time.time() - start_time
                 )
                 
@@ -1305,3 +1315,86 @@ class AIContentGenerator(QWidget):
         """关闭事件"""
         self._save_settings()
         super().closeEvent(event)
+
+    def _connect_ai_service_signals(self):
+        """连接AI服务信号"""
+        # 连接AI服务的信号到组件的信号处理
+        self.ai_service.worker_finished.connect(self._on_ai_response)
+        self.ai_service.worker_error.connect(self._on_ai_error)
+
+    async def _wait_for_ai_response(self, request_id: str, timeout: float = 60.0) -> AIResponse:
+        """等待AI响应"""
+        import asyncio
+
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            status = self.ai_service.get_request_status(request_id)
+            if status.get('status') == 'completed':
+                return status.get('response', AIResponse(request_id=request_id, success=False, error_message="No response"))
+            elif status.get('status') == 'failed':
+                return AIResponse(request_id=request_id, success=False, error_message=status.get('error', 'Unknown error'))
+
+            await asyncio.sleep(0.1)
+
+        return AIResponse(request_id=request_id, success=False, error_message="Timeout")
+
+    def _on_ai_response(self, request_id: str, response: AIResponse):
+        """处理AI响应"""
+        if request_id in self.active_requests:
+            request = self.active_requests[request_id]
+
+            if response.success:
+                # 后处理生成的内容
+                content = self.post_process_content(response.content, request)
+
+                # 创建响应对象
+                generation_response = ContentGenerationResponse(
+                    request_id=request_id,
+                    success=True,
+                    content=content,
+                    keywords=self.extract_keywords(content),
+                    metadata={
+                        "content_type": request.content_type.value,
+                        "style": request.style.value,
+                        "length": request.length.value,
+                        "target_audience": request.target_audience.value,
+                        "model": request.model,
+                        "created_at": time.time()
+                    },
+                    tokens_used=response.usage.get("total_tokens", 0),
+                    generation_time=response.processing_time
+                )
+
+                # 更新UI
+                self.result_display.setText(content)
+                self.status_label.setText("生成完成")
+
+                # 添加到历史记录
+                self.generation_history.append(generation_response)
+                self._populate_history_table()
+
+                # 发送信号
+                self.generation_completed.emit(request_id, generation_response)
+            else:
+                self.generation_error.emit(request_id, response.error_message)
+                self.status_label.setText(f"生成失败: {response.error_message}")
+
+            # 清理请求
+            del self.active_requests[request_id]
+
+            # 隐藏进度条（延迟）
+            QTimer.singleShot(2000, lambda: self.progress_widget.setVisible(False))
+            self.generate_btn.setEnabled(True)
+
+    def _on_ai_error(self, request_id: str, error_message: str):
+        """处理AI错误"""
+        if request_id in self.active_requests:
+            self.generation_error.emit(request_id, error_message)
+            self.status_label.setText(f"生成失败: {error_message}")
+
+            # 清理请求
+            del self.active_requests[request_id]
+
+            # 隐藏进度条（延迟）
+            QTimer.singleShot(2000, lambda: self.progress_widget.setVisible(False))
+            self.generate_btn.setEnabled(True)

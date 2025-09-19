@@ -48,15 +48,15 @@ from .professional_ui_system import (
 )
 
 # 导入组件
-from .components.media_library import MediaLibraryPanel
-from .components.video_preview_panel import ProfessionalVideoPreviewPanel
-from .components.effects_panel import EffectsPanel
-from .components.timeline_editor import TimelineEditor
-from .components.ai_tools_panel import AIToolsPanel
+from media_library_component import MediaLibraryPanel
+from video_preview_component import ProfessionalVideoPreviewPanel
+from effects_component import EffectsPanel
+from timeline_editor_component import TimelineEditor
+from ai_tools_component import AIToolsPanel
 from .components.properties_panel import PropertiesPanel
 from .components.professional_theme_manager import ProfessionalThemeManager, ThemeConfig
-from .components.playback_controls import PlaybackControls
-from .components.project_panel import ProjectPanel
+from playback_component import PlaybackControls
+from project_manager_component import ProjectPanel
 from .components.timeline_controls import TimelineControls
 
 # 导入核心管理器
@@ -423,7 +423,7 @@ class ProfessionalMainWindow(QMainWindow):
 
         panel_actions = {}
         panel_names = [
-            ("媒体库", "media_library"),
+            ("媒体库", "media_library_component"),
             ("特效", "effects"),
             ("AI工具", "ai_tools"),
             ("属性", "properties"),
@@ -1284,7 +1284,7 @@ class ProfessionalMainWindow(QMainWindow):
     def _toggle_panel(self, panel_id: str, visible: bool):
         """切换面板可见性"""
         panel_map = {
-            "media_library": self.media_library_dock,
+            "media_library_component": self.media_library_dock,
             "effects": self.effects_dock,
             "ai_tools": self.ai_tools_dock,
             "properties": self.properties_dock,
